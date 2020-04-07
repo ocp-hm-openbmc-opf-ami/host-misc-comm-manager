@@ -14,6 +14,7 @@
 // limitations under the License.
 */
 
+#include "mailbox-mgr.hpp"
 #include "platform-reset-mgr.hpp"
 
 static constexpr const char *hostMiscMgrService =
@@ -31,5 +32,7 @@ int main()
     server.add_manager(hostMiscPath);
 
     ESpiPlatformResetNotifier eSpiPlatformResetNotifier(io, server, conn);
+    MailboxMgr mailboxMgr(io, server, conn);
+
     io.run();
 }
