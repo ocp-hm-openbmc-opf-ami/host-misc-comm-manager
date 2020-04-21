@@ -15,7 +15,7 @@
 */
 
 #include "mailbox-mgr.hpp"
-#include "platform-reset-mgr.hpp"
+#include "platform-state-mgr.hpp"
 
 static constexpr const char *hostMiscMgrService =
     "xyz.openbmc_project.Host.Misc.Manager";
@@ -31,7 +31,7 @@ int main()
     mgrIntf->initialize();
     server.add_manager(hostMiscPath);
 
-    ESpiPlatformResetNotifier eSpiPlatformResetNotifier(io, server, conn);
+    PlatformState platformState(io, server, conn);
     MailboxMgr mailboxMgr(io, server, conn);
 
     io.run();

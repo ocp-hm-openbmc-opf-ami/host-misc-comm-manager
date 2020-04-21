@@ -15,7 +15,7 @@ add_definitions(-DBOOST_NO_RTTI)
 add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_ASIO_DISABLE_THREADS)
 
-set(SRC_FILES src/host-misc-manager.cpp src/platform-reset-mgr.cpp
+set(SRC_FILES src/host-misc-manager.cpp src/platform-state-mgr.cpp
  src/mailbox-mgr.cpp)
 
 # import sdbusplus
