@@ -1,12 +1,12 @@
 [Unit]
 Description=Host misc manager
-SyslogIdentifier=host-misc-manager
 
 [Service]
 Restart=always
 RestartSec=5
 ExecStart=/usr/bin/host-misc-manager
 StartLimitInterval=0
+SyslogIdentifier=host-misc-manager
 Type=dbus
 BusName=xyz.openbmc_project.Host.Misc.Manager
 
