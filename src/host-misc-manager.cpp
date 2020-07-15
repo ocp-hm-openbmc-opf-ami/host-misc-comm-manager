@@ -19,6 +19,8 @@
 
 static constexpr const char *hostMiscMgrService =
     "xyz.openbmc_project.Host.Misc.Manager";
+static constexpr const char *hostMiscMgrIntf =
+    "xyz.openbmc_project.Host.Misc.Manager";
 static constexpr const char *hostMiscPath = "/xyz/openbmc_project/misc";
 
 int main()
@@ -27,7 +29,7 @@ int main()
     auto conn = std::make_shared<sdbusplus::asio::connection>(io);
     conn->request_name(hostMiscMgrService);
     sdbusplus::asio::object_server server(conn, true);
-    auto mgrIntf = server.add_interface(hostMiscPath, "");
+    auto mgrIntf = server.add_interface(hostMiscPath, hostMiscMgrIntf);
     mgrIntf->initialize();
     server.add_manager(hostMiscPath);
 
