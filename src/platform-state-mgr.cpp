@@ -20,6 +20,7 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus/match.hpp>

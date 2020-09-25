@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <boost/asio/io_service.hpp>
 #include <phosphor-logging/elog-errors.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 

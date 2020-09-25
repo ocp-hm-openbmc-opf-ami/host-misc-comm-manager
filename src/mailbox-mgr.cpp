@@ -18,6 +18,7 @@
 
 #include "utils.hpp"
 
+#include <boost/asio/read.hpp>
 #include <phosphor-logging/log.hpp>
 
 static constexpr const char *mboxPath = "/xyz/openbmc_project/misc/mailbox/";

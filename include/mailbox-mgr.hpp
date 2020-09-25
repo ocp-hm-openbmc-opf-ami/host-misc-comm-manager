@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <boost/asio/io_service.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 #include <xyz/openbmc_project/Control/Security/RestrictionMode/server.hpp>
 
