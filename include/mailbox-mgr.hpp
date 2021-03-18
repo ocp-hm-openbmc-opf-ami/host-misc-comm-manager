@@ -20,19 +20,16 @@
 #include <sdbusplus/asio/object_server.hpp>
 #include <xyz/openbmc_project/Control/Security/RestrictionMode/server.hpp>
 
-static constexpr size_t mboxSize = 16;
-
 class MailboxMgr
 {
     boost::asio::io_service &io;
     sdbusplus::asio::object_server &server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
-    std::array<std::shared_ptr<sdbusplus::asio::dbus_interface>, mboxSize>
-        mboxIface;
-
+    std::vector<std::shared_ptr<sdbusplus::asio::dbus_interface>> mboxIface;
     int mboxFd = -1;
-    std::array<uint8_t, mboxSize> mboxDataBuffer = {0};
-    std::array<uint8_t, mboxSize> newMboxDataBuffer = {0};
+    size_t mboxSize;
+    std::vector<uint8_t> mboxDataBuffer;
+    std::vector<uint8_t> newMboxDataBuffer;
     std::unique_ptr<boost::asio::posix::stream_descriptor> mboxDev = nullptr;
 
     void asyncReadMbox();

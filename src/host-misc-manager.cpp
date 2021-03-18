@@ -17,6 +17,8 @@
 #include "mailbox-mgr.hpp"
 #include "platform-state-mgr.hpp"
 
+#include <phosphor-logging/log.hpp>
+
 static constexpr const char *hostMiscMgrService =
     "xyz.openbmc_project.Host.Misc.Manager";
 static constexpr const char *hostMiscMgrIntf =
@@ -33,8 +35,25 @@ int main()
     mgrIntf->initialize();
     server.add_manager(hostMiscPath);
 
-    PlatformState platformState(io, server, conn);
-    MailboxMgr mailboxMgr(io, server, conn);
+    std::unique_ptr<PlatformState> platformState{};
+    std::unique_ptr<MailboxMgr> mailboxMgr{};
+    try
+    {
+        platformState = std::make_unique<PlatformState>(io, server, conn);
+    }
+    catch (std::exception const &e)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
+    }
+
+    try
+    {
+        mailboxMgr = std::make_unique<MailboxMgr>(io, server, conn);
+    }
+    catch (std::exception const &e)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
+    }
 
     io.run();
 }

@@ -18,6 +18,9 @@
 
 #include "utils.hpp"
 
+#include <linux/aspeed-lpc-mbox.h>
+#include <sys/ioctl.h>
+
 #include <boost/asio/read.hpp>
 #include <phosphor-logging/log.hpp>
 
@@ -44,10 +47,27 @@ void MailboxMgr::mboxInit()
     }
     mboxDev =
         std::make_unique<boost::asio::posix::stream_descriptor>(io, mboxFd);
+
+    aspeed_mbox_ioctl_data mboxData;
+    if (ioctl(mboxFd, ASPEED_MBOX_SIZE, &mboxData) < 0)
+    {
+        throw std::runtime_error("Unable to get mailbox size");
+    }
+    if (!(mboxData.data > 0))
+    {
+        throw std::runtime_error("Invalid mailbox size");
+    }
+    mboxSize = mboxData.data;
+
+    phosphor::logging::log<phosphor::logging::level::INFO>(
+        ("Mailbox size: " + std::to_string(mboxSize)).c_str());
+
+    mboxDataBuffer.resize(mboxSize);
+    newMboxDataBuffer.resize(mboxSize);
     for (unsigned int reg = 0; reg < mboxSize; reg++)
     {
-        mboxIface[reg] =
-            server.add_interface(mboxPath + std::to_string(reg), mboxIntf);
+        mboxIface.push_back(
+            server.add_interface(mboxPath + std::to_string(reg), mboxIntf));
     }
     asyncReadMbox();
 }
@@ -59,9 +79,10 @@ void MailboxMgr::asyncReadMbox()
         boost::asio::buffer(newMboxDataBuffer, newMboxDataBuffer.size()),
         boost::asio::transfer_exactly(mboxSize),
         [this](const boost::system::error_code &ec, size_t rlen) {
-            if (ec || rlen < mboxSize)
+            if (ec || rlen != mboxSize)
             {
-                channelAbort(io, "Failed to read Mailbox", ec);
+                phosphor::logging::log<phosphor::logging::level::ERR>(
+                    "Failed to read Mailbox");
                 return;
             }
 
