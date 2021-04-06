@@ -50,7 +50,7 @@ static constexpr const char* platformStateIntf =
 // System interface channels will be kept open to all IPMI commands till post
 // complete or CoreBiosDone. Setting a maximum BIOS boot time after which
 // CoreBiosDone will be set as true by default which limit the security exposure
-static constexpr const int maxBiosBootWaitTimeSec = 360;
+static constexpr const int maxBiosBootWaitTimeSec = 600;
 static constexpr const int pollIntervalSec = 1;
 
 PlatformState::PlatformState(
