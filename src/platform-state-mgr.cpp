@@ -66,9 +66,8 @@ PlatformState::PlatformState(
 
 void PlatformState::sioStatusInit(void)
 {
-    const std::string device =
-        "/sys/devices/platform/ahb/ahb:apb/1e789000.lpc/"
-        "1e789080.lpc-host/1e789080.lpc-host:regs/sio_status";
+    const std::string device = "/sys/devices/platform/ahb/ahb:apb/1e789000.lpc/"
+                               "1e789000.lpc:regs/sio_status";
     deviceFile.open(device);
     if (!deviceFile.good())
     {
