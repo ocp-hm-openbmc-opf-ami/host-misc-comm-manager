@@ -46,6 +46,8 @@ static constexpr const char* platformStatePath =
     "/xyz/openbmc_project/misc/platform_state";
 static constexpr const char* platformStateIntf =
     "xyz.openbmc_project.State.Host.Misc";
+/*Bit 0 of the Virtual Wire register shall be monitored*/
+constexpr uint32_t bit0Mask = 0x01;
 
 // System interface channels will be kept open to all IPMI commands till post
 // complete or CoreBiosDone. Setting a maximum BIOS boot time after which
@@ -57,11 +59,12 @@ PlatformState::PlatformState(
     boost::asio::io_service& ioService, sdbusplus::asio::object_server& srv,
     std::shared_ptr<sdbusplus::asio::connection>& connection) :
     io(ioService),
-    server(srv), conn(connection), pollTimer(io)
+    server(srv), conn(connection), pollTimer(io), vwPollTimer(io)
 {
     pltStateIface = server.add_interface(platformStatePath, platformStateIntf);
     eSpiInit();
     sioStatusInit();
+    triggerPostComplete();
 }
 
 void PlatformState::sioStatusInit(void)
@@ -140,12 +143,83 @@ void PlatformState::asyncReadeSpi(void)
 
 void PlatformState::checkAndRegisterPltState(void)
 {
-    if (eSpiPlatformResetInitialized && coreBiosDoneInitialized &&
-        !pltStateIface->is_initialized())
+    bool allPropertyInitialized =
+        eSpiPlatformResetInitialized && coreBiosDoneInitialized;
+    if (allPropertyInitialized && !pltStateIface->is_initialized())
     {
         pltStateIface->register_property("ESpiPlatformReset", eSpiReset);
         pltStateIface->register_property("CoreBiosDone", coreBiosDone);
+        pltStateIface->register_property("PostComplete", postComplete);
         pltStateIface->initialize(true);
+    }
+}
+
+void PlatformState::initializePostComplete(void)
+{
+    if (pltStateIface->is_initialized())
+    {
+        pltStateIface->set_property("PostComplete", postComplete);
+    }
+}
+
+void PlatformState::readPOSTComplete(void)
+{
+    uint32_t readVirtualWireRegister;
+    if (!isVWFileOpened || eSPIvwFd < 0)
+    {
+        constexpr const char* vwdevName = "/dev/aspeed-espi-vw";
+        eSPIvwFd = open(vwdevName, O_RDONLY);
+        if (eSPIvwFd < 0)
+        {
+            throw std::runtime_error(
+                "Couldn't open Aspeed ESPI Virtual Wire Device file");
+        }
+        else
+        {
+            phosphor::logging::log<phosphor::logging::level::DEBUG>(
+                "ESPI Virtual Wire Device File open success");
+            isVWFileOpened = true;
+        }
+    }
+    if (ioctl(eSPIvwFd, ASPEED_ESPI_VW_GET_GPIO_VAL, &readVirtualWireRegister) <
+        0)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(
+            "Virtual Wire::IOCTL Call Failed");
+        return;
+    }
+
+    if ((readVirtualWireRegister & bit0Mask) == 1)
+    {
+        postComplete = true;
+        phosphor::logging::log<phosphor::logging::level::DEBUG>(
+            "PostComplete property is set to true");
+        initializePostComplete();
+    }
+    else
+    {
+        phosphor::logging::log<phosphor::logging::level::DEBUG>(
+            "Virtual Wire Register is not set");
+        postComplete = false;
+        initializePostComplete();
+        if (coreBiosDone)
+        {
+            vwPollTimer.expires_after(
+                boost::asio::chrono::seconds(pollIntervalSec));
+            vwPollTimer.async_wait([this](const boost::system::error_code& ec) {
+                if (ec == boost::asio::error::operation_aborted)
+                {
+                    // timer aborted do nothing
+                    return;
+                }
+                else if (ec)
+                {
+                    channelAbort(io, "vwpollTimer failed", ec);
+                    return;
+                }
+                readPOSTComplete();
+            });
+        }
     }
 }
 
@@ -205,7 +279,21 @@ void PlatformState::detectCoreBiosDone(void)
             coreBiosDoneInitialized = true;
             checkAndRegisterPltState();
         }
+        triggerPostComplete();
     });
+}
+
+void PlatformState::triggerPostComplete()
+{
+    if (coreBiosDone)
+    {
+        readPOSTComplete();
+    }
+    else
+    {
+        postComplete = false;
+        initializePostComplete();
+    }
 }
 
 uint8_t PlatformState::sioStatusRead(void)

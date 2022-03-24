@@ -15,6 +15,8 @@
 */
 
 #pragma once
+#include <linux/aspeed-espi-ioc.h>
+
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <fstream>
@@ -29,13 +31,17 @@ class PlatformState
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> pltStateIface;
     boost::asio::steady_timer pollTimer;
+    boost::asio::steady_timer vwPollTimer;
 
     bool coreBiosDone = false;
     bool eSpiReset = false;
+    bool postComplete = false;
     bool coreBiosDoneInitialized = false;
     bool eSpiPlatformResetInitialized = false;
     bool powerStatusOn = false;
+    bool isVWFileOpened = false;
     int eSpiFd = -1;
+    int eSPIvwFd = -1;
     unsigned int pollCount = 0;
     std::fstream deviceFile;
     std::array<uint8_t, eSpiMessageSize> eSpiBuffer = {0};
@@ -43,6 +49,8 @@ class PlatformState
     std::unique_ptr<sdbusplus::bus::match::match> powerMatch = nullptr;
 
     void asyncReadeSpi(void);
+    void triggerPostComplete(void);
+    void initializePostComplete(void);
     void eSpiInit(void);
     void sioStatusInit(void);
     uint8_t sioStatusRead(void);
@@ -52,6 +60,7 @@ class PlatformState
     void checkAndRegisterPltState(void);
     bool isPowerOn(void);
     void setupPowerMatch(void);
+    void readPOSTComplete(void);
 
   public:
     PlatformState(boost::asio::io_service &io,
@@ -66,6 +75,10 @@ class PlatformState
         if (deviceFile.is_open())
         {
             deviceFile.close();
+        }
+        if (!(eSPIvwFd < 0))
+        {
+            close(eSPIvwFd);
         }
     }
 };
