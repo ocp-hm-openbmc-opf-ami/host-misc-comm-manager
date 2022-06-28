@@ -189,7 +189,7 @@ void PlatformState::readPOSTComplete(void)
         return;
     }
 
-    if ((readVirtualWireRegister & bit0Mask) == 1)
+    if ((readVirtualWireRegister & bit0Mask) == 0)
     {
         postComplete = true;
         phosphor::logging::log<phosphor::logging::level::DEBUG>(
