@@ -22,6 +22,7 @@
 #include <boost/asio.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/container/flat_map.hpp>
+#include <gpiod.hpp>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus/match.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
@@ -46,8 +47,6 @@ static constexpr const char* platformStatePath =
     "/xyz/openbmc_project/misc/platform_state";
 static constexpr const char* platformStateIntf =
     "xyz.openbmc_project.State.Host.Misc";
-/*Bit 0 of the Virtual Wire register shall be monitored*/
-constexpr uint32_t bit0Mask = 0x01;
 
 // System interface channels will be kept open to all IPMI commands till post
 // complete or CoreBiosDone. Setting a maximum BIOS boot time after which
@@ -164,32 +163,32 @@ void PlatformState::initializePostComplete(void)
 
 void PlatformState::readPOSTComplete(void)
 {
-    uint32_t readVirtualWireRegister;
-    if (!isVWFileOpened || eSPIvwFd < 0)
-    {
-        constexpr const char* vwdevName = "/dev/aspeed-espi-vw";
-        eSPIvwFd = open(vwdevName, O_RDONLY);
-        if (eSPIvwFd < 0)
-        {
-            throw std::runtime_error(
-                "Couldn't open Aspeed ESPI Virtual Wire Device file");
-        }
-        else
-        {
-            phosphor::logging::log<phosphor::logging::level::DEBUG>(
-                "ESPI Virtual Wire Device File open success");
-            isVWFileOpened = true;
-        }
-    }
-    if (ioctl(eSPIvwFd, ASPEED_ESPI_VW_GET_GPIO_VAL, &readVirtualWireRegister) <
-        0)
+
+    gpiod::line vwFmBIOSPostCmplt = gpiod::find_line("VW_FM_BIOS_POST_CMPLT_N");
+    if (!vwFmBIOSPostCmplt)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Virtual Wire::IOCTL Call Failed");
+            "Failed to detect VW_FM_BIOS_POST_CMPLT_N vgpio line");
         return;
     }
 
-    if ((readVirtualWireRegister & bit0Mask) == 0)
+    // Request GPIO input
+    try
+    {
+        const static constexpr char* serviceName = "host-misc-comm-manager";
+        vwFmBIOSPostCmplt.request(
+            {serviceName, gpiod::line_request::DIRECTION_INPUT});
+    }
+    catch (const std::exception&)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(
+            "Failed to request VW_FM_BIOS_POST_CMPLT_N vgpio pin");
+        return;
+    }
+
+    // BIOS POST Completion is low-assert
+
+    if (vwFmBIOSPostCmplt.get_value() == 0)
     {
         postComplete = true;
         phosphor::logging::log<phosphor::logging::level::DEBUG>(
@@ -199,7 +198,7 @@ void PlatformState::readPOSTComplete(void)
     else
     {
         phosphor::logging::log<phosphor::logging::level::DEBUG>(
-            "Virtual Wire Register is not set");
+            "VWGPIO BIOS POST completion pin is not set");
         postComplete = false;
         initializePostComplete();
         if (coreBiosDone)

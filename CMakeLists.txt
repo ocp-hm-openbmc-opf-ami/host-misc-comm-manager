@@ -42,6 +42,7 @@ target_link_libraries(${PROJECT_NAME} ${SDBUSPLUSPLUS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${DBUSINTERFACE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} phosphor_logging)
+target_link_libraries(${PROJECT_NAME} gpiodcxx)
 
 set(SERVICE_FILES
     ${PROJECT_SOURCE_DIR}/xyz.openbmc_project.Host.Misc.Manager.service)

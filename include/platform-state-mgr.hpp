@@ -15,7 +15,6 @@
 */
 
 #pragma once
-#include <linux/aspeed-espi-ioc.h>
 
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/steady_timer.hpp>
@@ -39,9 +38,7 @@ class PlatformState
     bool coreBiosDoneInitialized = false;
     bool eSpiPlatformResetInitialized = false;
     bool powerStatusOn = false;
-    bool isVWFileOpened = false;
     int eSpiFd = -1;
-    int eSPIvwFd = -1;
     unsigned int pollCount = 0;
     std::fstream deviceFile;
     std::array<uint8_t, eSpiMessageSize> eSpiBuffer = {0};
@@ -75,10 +72,6 @@ class PlatformState
         if (deviceFile.is_open())
         {
             deviceFile.close();
-        }
-        if (!(eSPIvwFd < 0))
-        {
-            close(eSPIvwFd);
         }
     }
 };
