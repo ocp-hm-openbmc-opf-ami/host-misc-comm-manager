@@ -16,6 +16,7 @@
 
 #include "mailbox-mgr.hpp"
 #include "platform-state-mgr.hpp"
+#include "seamless-update.hpp"
 
 #include <phosphor-logging/log.hpp>
 
@@ -37,6 +38,7 @@ int main()
 
     std::unique_ptr<PlatformState> platformState{};
     std::unique_ptr<MailboxMgr> mailboxMgr{};
+    std::unique_ptr<SeamlessUpdate> seamlessUpdate{};
     try
     {
         platformState = std::make_unique<PlatformState>(io, server, conn);
@@ -49,6 +51,15 @@ int main()
     try
     {
         mailboxMgr = std::make_unique<MailboxMgr>(io, server, conn);
+    }
+    catch (std::exception const &e)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
+    }
+
+    try
+    {
+        seamlessUpdate = std::make_unique<SeamlessUpdate>(io, server, conn);
     }
     catch (std::exception const &e)
     {

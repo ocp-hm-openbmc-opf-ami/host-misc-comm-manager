@@ -16,7 +16,7 @@ add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_ASIO_DISABLE_THREADS)
 
 set(SRC_FILES src/host-misc-manager.cpp src/platform-state-mgr.cpp
- src/mailbox-mgr.cpp)
+ src/mailbox-mgr.cpp src/seamless-update.cpp)
 
 # import sdbusplus
 find_package(PkgConfig REQUIRED)
