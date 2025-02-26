@@ -24,7 +24,7 @@ static constexpr const char* seamlessUpdateIntf =
     "xyz.openbmc_project.Misc.Seamless";
 
 SeamlessUpdate::SeamlessUpdate(
-    boost::asio::io_service& ioService, sdbusplus::asio::object_server& srv,
+    boost::asio::io_context& ioService, sdbusplus::asio::object_server& srv,
     std::shared_ptr<sdbusplus::asio::connection>& connection) :
     io(ioService),
     server(srv), conn(connection)

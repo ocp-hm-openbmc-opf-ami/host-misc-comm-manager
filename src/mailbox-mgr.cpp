@@ -28,7 +28,7 @@ static constexpr const char *mboxPath = "/xyz/openbmc_project/misc/mailbox/";
 static constexpr const char *mboxIntf = "xyz.openbmc_project.Misc.Mailbox";
 
 MailboxMgr::MailboxMgr(
-    boost::asio::io_service &ioService, sdbusplus::asio::object_server &srv,
+    boost::asio::io_context &ioService, sdbusplus::asio::object_server &srv,
     std::shared_ptr<sdbusplus::asio::connection> &connection) :
     io(ioService),
     server(srv), conn(connection)

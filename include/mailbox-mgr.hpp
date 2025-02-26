@@ -16,13 +16,13 @@
 
 #pragma once
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 #include <xyz/openbmc_project/Control/Security/RestrictionMode/server.hpp>
 
 class MailboxMgr
 {
-    boost::asio::io_service &io;
+    boost::asio::io_context &io;
     sdbusplus::asio::object_server &server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::vector<std::shared_ptr<sdbusplus::asio::dbus_interface>> mboxIface;
@@ -37,7 +37,7 @@ class MailboxMgr
     size_t writeMbox(const unsigned int reg, const uint8_t mboxDataRegBVal);
 
   public:
-    MailboxMgr(boost::asio::io_service &io, sdbusplus::asio::object_server &srv,
+    MailboxMgr(boost::asio::io_context &io, sdbusplus::asio::object_server &srv,
                std::shared_ptr<sdbusplus::asio::connection> &conn);
     ~MailboxMgr()
     {

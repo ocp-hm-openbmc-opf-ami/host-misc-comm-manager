@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <fstream>
 #include <sdbusplus/asio/object_server.hpp>
@@ -25,7 +25,7 @@ static constexpr size_t eSpiMessageSize = 1;
 
 class PlatformState
 {
-    boost::asio::io_service &io;
+    boost::asio::io_context &io;
     sdbusplus::asio::object_server &server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> pltStateIface;
@@ -60,7 +60,7 @@ class PlatformState
     void readPOSTComplete(void);
 
   public:
-    PlatformState(boost::asio::io_service &io,
+    PlatformState(boost::asio::io_context &io,
                   sdbusplus::asio::object_server &srv,
                   std::shared_ptr<sdbusplus::asio::connection> &conn);
     ~PlatformState()

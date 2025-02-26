@@ -16,11 +16,11 @@
 
 #pragma once
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <phosphor-logging/elog-errors.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 
-static inline void channelAbort(boost::asio::io_service &io, const char *msg,
+static inline void channelAbort(boost::asio::io_context &io, const char *msg,
                                 const boost::system::error_code &ec)
 {
     phosphor::logging::log<phosphor::logging::level::ERR>(

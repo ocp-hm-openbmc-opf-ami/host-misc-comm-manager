@@ -15,14 +15,14 @@
 */
 
 #pragma once
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <fstream>
 #include <sdbusplus/asio/object_server.hpp>
 
 class SeamlessUpdate
 {
     std::fstream deviceFile;
-    boost::asio::io_service &io;
+    boost::asio::io_context &io;
     sdbusplus::asio::object_server &server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> seamlessUpdateIface;
@@ -35,7 +35,7 @@ class SeamlessUpdate
     int updateSioRegister(const uint8_t &regVal);
 
   public:
-    SeamlessUpdate(boost::asio::io_service &io,
+    SeamlessUpdate(boost::asio::io_context &io,
                    sdbusplus::asio::object_server &srv,
                    std::shared_ptr<sdbusplus::asio::connection> &conn);
     ~SeamlessUpdate()

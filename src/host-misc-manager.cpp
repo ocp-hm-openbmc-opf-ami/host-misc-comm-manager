@@ -28,7 +28,7 @@ static constexpr const char *hostMiscPath = "/xyz/openbmc_project/misc";
 
 int main()
 {
-    boost::asio::io_service io;
+    boost::asio::io_context io;
     auto conn = std::make_shared<sdbusplus::asio::connection>(io);
     conn->request_name(hostMiscMgrService);
     sdbusplus::asio::object_server server(conn, true);
