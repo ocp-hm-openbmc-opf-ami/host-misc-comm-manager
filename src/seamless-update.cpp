@@ -54,7 +54,7 @@ void SeamlessUpdate::checkAndRegisterSeamlessProperty(void)
 void SeamlessUpdate::sioStatusInit(void)
 {
     // The new path created after Exposing SIORx_29 register.
-    const std::string device = "/sys/devices/platform/ahb/ahb:apb/1e789000.lpc/"
+    const std::string device = "/sys/bus/platform/devices/1e789000.lpc/"
                                "1e789000.lpc:regs/sio29_status";
     deviceFile.open(device);
     if (!deviceFile.good())
