@@ -54,3 +54,19 @@ indicate `CoreBiosDone`:
 Mailbox registers under AST2500 / AST2600, will be exposed as D-Bus objects.
 These registers are used for communication with Host & BMC. Individual register
 usage is beyond the scope of this component.
+
+### Dependency
+Host miscellaneous communication manager have following compile time dependencies
+* boost
+* sdbusplus
+* phosphor-logging
+* libgpiod
+
+### Compilation
+```
+mkdir build
+cd build
+cmake ../
+make
+```
+
