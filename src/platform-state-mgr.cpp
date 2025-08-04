@@ -164,11 +164,11 @@ void PlatformState::initializePostComplete(void)
 void PlatformState::readPOSTComplete(void)
 {
 
-    gpiod::line vwFmBIOSPostCmplt = gpiod::find_line("VW_FM_BIOS_POST_CMPLT_N");
+    gpiod::line vwFmBIOSPostCmplt = gpiod::find_line("VW_FM_BIOS_POST_CMPLT_BMC");
     if (!vwFmBIOSPostCmplt)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Failed to detect VW_FM_BIOS_POST_CMPLT_N vgpio line");
+            "Failed to detect VW_FM_BIOS_POST_CMPLT_BMC vgpio line");
         return;
     }
 
@@ -182,23 +182,23 @@ void PlatformState::readPOSTComplete(void)
     catch (const std::exception&)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Failed to request VW_FM_BIOS_POST_CMPLT_N vgpio pin");
+            "Failed to request VW_FM_BIOS_POST_CMPLT_BMC vgpio pin");
         return;
     }
 
-    // BIOS POST Completion is low-assert
+    // BIOS POST Completion is now active-high
 
-    if (vwFmBIOSPostCmplt.get_value() == 0)
+    if (vwFmBIOSPostCmplt.get_value() == 1)
     {
         postComplete = true;
         phosphor::logging::log<phosphor::logging::level::DEBUG>(
-            "PostComplete property is set to true");
+            "PostComplete property is set to true (active-high)");
         initializePostComplete();
     }
     else
     {
         phosphor::logging::log<phosphor::logging::level::DEBUG>(
-            "VWGPIO BIOS POST completion pin is not set");
+            "VWGPIO BIOS POST completion pin is LOW (not complete)");
         postComplete = false;
         initializePostComplete();
         if (coreBiosDone)
