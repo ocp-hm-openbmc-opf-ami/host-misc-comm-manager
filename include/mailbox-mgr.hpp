@@ -39,6 +39,12 @@ class MailboxMgr
   public:
     MailboxMgr(boost::asio::io_context &io, sdbusplus::asio::object_server &srv,
                std::shared_ptr<sdbusplus::asio::connection> &conn);
+
+    MailboxMgr(const MailboxMgr &) = delete;
+    MailboxMgr &operator=(const MailboxMgr &) = delete;
+    MailboxMgr(MailboxMgr &&) = delete;
+    MailboxMgr &operator=(MailboxMgr &&) = delete;
+
     ~MailboxMgr()
     {
         if (!(mboxFd < 0))

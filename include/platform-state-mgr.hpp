@@ -63,6 +63,12 @@ class PlatformState
     PlatformState(boost::asio::io_context &io,
                   sdbusplus::asio::object_server &srv,
                   std::shared_ptr<sdbusplus::asio::connection> &conn);
+
+    PlatformState(const PlatformState &) = delete;
+    PlatformState &operator=(const PlatformState &) = delete;
+    PlatformState(PlatformState &&) = delete;
+    PlatformState &operator=(PlatformState &&) = delete;
+
     ~PlatformState()
     {
         if (!(eSpiFd < 0))
