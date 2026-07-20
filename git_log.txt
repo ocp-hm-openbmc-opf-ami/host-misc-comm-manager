@@ -1,0 +1,476 @@
+commit 92436c8780ee6681fe3ba346eb8ca1280abe18a5
+Author: smahankx <satish.kumarx.mahankali@intel.com>
+Date:   Thu Jun 11 13:20:37 2026 +0530
+
+    Coverity: Fix misc. issues (#25)
+    
+    This commit fixes the following Coverity CIDs
+    
+    3258532
+    3257562
+    Missing assignment operator
+
+commit 0fc4b83e3ec932708a315459315ae8c00192ca46
+Author: Ankita Gawade <ankita.gawade@intel.com>
+Date:   Tue Aug 5 00:02:06 2025 +0530
+
+    Fix POST complete signal polarity (#19)
+    
+    BIOS POST complete signal polarity has been reversed in Oak Stream
+    architecture. The new signal VW_FM_BIOS_POST_CMPLT_BMC is active-high
+    instead of the previous low-assert VW_FM_BIOS_POST_CMPLT_N signal.
+    
+    This change addresses the OS state dependency issue where the operating
+    system status remained inactive after BMC reboot due to incorrect POST
+    complete signal detection. The OS state transitions depend on POST
+    complete assertion, which in turn depends on CoreBiosDone being true.
+    
+    Tested
+    - AC cycle: OS state correctly transitions to Standby after BIOS boot
+    - Chassis reset: OS state properly detected and updated
+    - BMC reboot: Host status maintains Standby state when BIOS is running
+    instead of remaining in OSStatus.Inactive state
+    
+    Signed-off-by: Ankita Vilas Gawade <ankita.gawade@intel.com>
+
+commit d906509ca6a87e60c8f7ca5ee91170e438ff8a7c
+Author: Terry Duncan <terry.s.duncan@intel.com>
+Date:   Thu May 1 08:36:49 2025 -0700
+
+    Revert license collab (#18)
+    
+    Per agreement with 1source team who pushed this by mistake to existing
+    collab repos.
+
+commit f85967e3a9849b743a1a9a7bb403553abc857026
+Author: sys-1sgithubsupport <sys_1sgithubsupport@intel.com>
+Date:   Fri Apr 25 04:52:48 2025 +0530
+
+    According LICENSE-collab.md to intel-collab policy
+
+commit 752bf7d905edfe0b5c344dd063b10661642b9df2
+Author: sys-1sgithubsupport <sys_1sgithubsupport@intel.com>
+Date:   Fri Apr 25 04:52:47 2025 +0530
+
+    According README-collab.md to intel-collab policy
+
+commit 67f1b3cc464cda52e325928d0c7b05842bacad15
+Author: Jason M. Bills <jason.m.bills@intel.com>
+Date:   Wed Apr 23 07:56:26 2025 -0600
+
+    Update to C++23 (#17)
+    
+    Update to C++23 which is required for sdbusplus
+    
+    Signed-off-by: Jason M. Bills <jason.m.bills@intel.com>
+
+commit 6713a28126c53aa38efe4f9f3a337b63a82ce9a8
+Author: Vikash Chandola <vikash.chandola@intel.com>
+Date:   Mon Apr 7 10:52:26 2025 +0530
+
+    Add  compile dependency README.md (#14)
+    
+    Add compile dependency in README as part of integration guide.
+
+commit d81148872e0b84ef46892a30086dee35125e7167
+Author: Iwona Winiarska <iwona.winiarska@intel.com>
+Date:   Mon Mar 24 11:41:22 2025 +0100
+
+    Change sysfs paths for LPC bus access (#15)
+    
+    Linux kernel DTSIs describing Aspeed AST2600 hardware were recently
+    updated. In addition to making the files comply with the schema, the
+    hardware description is now matching the reality, with some devices
+    being moved to their appropriate place (many devices were incorrectly
+    described as being connected over AMBA APB, where they are actually
+    connected over AMBA AHB).
+    
+    Avoid low-level interconnect details when accessing LPC bus using sysfs,
+    as using full device tree path may result in failure to detect LPC
+    devices on updated kernels.
+    
+    Tested: LPC buses are correctly found using old and new Aspeed DTSIs.
+    
+    Link: https://lore.kernel.org/all/20240821-dt-warnings-apb-nodes-v1-1-c524923acca5@codeconstruct.com.au/
+    Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+
+commit 41147c9c81d6131205c56bc5f4de53090ab5591e
+Author: Jason M. Bills <jasonm.bills@yahoo.com>
+Date:   Wed Feb 26 14:30:45 2025 -0700
+
+    Fix build issues with boost 1.87 (#16)
+    
+    Update deprecated terminology that was removed in boost 1.87.
+    
+    Signed-off-by: Jason M. Bills <jason.m.bills@intel.com>
+
+commit cf4628455d288fca944f84996e58422b9e806dc2
+Author: jmbills <jasonm.bills@yahoo.com>
+Date:   Fri Jun 30 09:24:08 2023 -0600
+
+    Use variable for service install location (#11)
+    
+    After enabling 'usrmerge', the install location for systemd service
+    files changed. This uses a variable to get the installation location
+    instead of hardcoding it.
+    
+    Tested:
+    Confirmed that with 'usrmerge' enabled, the service file is correctly
+    installed.
+    
+    Signed-off-by: Jason M. Bills <jason.m.bills@intel.com>
+
+commit 0bf62245caf75e548621d8dab013ff2b18f10162
+Author: Nikhil Jain C S <nikhil.jain.c.s@intel.com>
+Date:   Fri Jun 23 11:34:27 2023 +0530
+
+    Add seamless update interface (#8)
+    
+    Add new seamless update object path, interface, method, and property
+    
+    Tested:
+    
+    1. busctl tree xyz.openbmc_project.Host.Misc.Manager shows object path
+    
+          └─/xyz/openbmc_project/misc/seamless_update
+    
+    2. busctl introspect xyz.openbmc_project.Host.Misc.Manager
+    /xyz/openbmc_project/misc/seamless_update shows interface names with
+    methods and property
+    
+    3. Verified busctl get-property and set-property of SeamlessUpdateStatus
+    
+    ---------
+    
+    Signed-off-by: Nikhil Jain C S <nikhil.jain.c.s@intel.com>
+
+commit ce46900c39bc662901c14c45eaeed1793efa262d
+Author: Vasu V <vasu.v@intel.com>
+Date:   Wed May 3 15:10:26 2023 +0530
+
+    vgpio based BIOS POST complete support (#7)
+    
+    Currently, the PostComplete  property was updated based
+    on reading the aspeed register.
+    
+    This patch will update PostComplete dbus property
+    by vgpio (VM_FM_BIOS_POST_CMPLT_N) line.
+    
+    
+    Tested:
+    #1 verified VM_FM_BIOS_POST_CMPLT_N gpio line returning zero after bios
+    completion
+    #2 PostComplete  is getting set to true after post bios completion
+    ```
+    NAME                                TYPE      SIGNATURE RESULT/VALUE FLAGS
+    org.freedesktop.DBus.Introspectable interface -         -            -
+    .Introspect                         method    -         s            -
+    org.freedesktop.DBus.Peer           interface -         -            -
+    .GetMachineId                       method    -         s            -
+    .Ping                               method    -         -            -
+    org.freedesktop.DBus.Properties     interface -         -            -
+    .Get                                method    ss        v            -
+    .GetAll                             method    s         a{sv}        -
+    .Set                                method    ssv       -            -
+    .PropertiesChanged                  signal    sa{sv}as  -            -
+    xyz.openbmc_project.State.Host.Misc interface -         -            -
+    .CoreBiosDone                       property  b         true         emits-change
+    .ESpiPlatformReset                  property  b         true         emits-change
+    .PostComplete                       property  b         true         emits-change
+    root@bmc-maca4bf018ccdc0:~# gpioget gpiochip3 0
+    0
+    '''
+    
+    ---------
+    
+    Signed-off-by: Vasu V <vasu.v@intel.com>
+
+commit cd1bb3028eb85d5e19e0cc7bc8f924f1b6307a76
+Author: Vernon Mauery <vernon.mauery@intel.com>
+Date:   Fri Oct 14 11:19:57 2022 -0700
+
+    Change c++ std to 20 (#4)
+    
+    Building things that use sdbusplus with gcc-12 requires -std=c++-20 to
+    successfully compile.
+    
+    Signed-off-by: Vernon Mauery <vernon.mauery@intel.com>
+
+commit 3294038aaf715a8554b36afaa8de849bbeee5b2e
+Author: ankita prasad <ankita.prasad@intel.com>
+Date:   Tue Jun 28 16:29:09 2022 +0530
+
+    Logical modification for POST complete (#3)
+    
+    POST complete is active low as per specification. This change caters
+    the logical change for PostComplete to be true when ESPI09C[0] is signaled low
+    from BIOS.
+    
+    Tested:
+    Tested on AST2600. The change is reflected as expected.
+    
+    root@bmc-maca4bf018cc0b5:~# busctl introspect xyz.openbmc_project.Host.Misc.Manager /xyz/openbmc_project/misc/platform_state
+    NAME                                TYPE      SIGNATURE RESULT/VALUE FLAGS
+    org.freedesktop.DBus.Introspectable interface -         -            -
+    .Introspect                         method    -         s            -
+    org.freedesktop.DBus.Peer           interface -         -            -
+    .GetMachineId                       method    -         s            -
+    .Ping                               method    -         -            -
+    org.freedesktop.DBus.Properties     interface -         -            -
+    .Get                                method    ss        v            -
+    .GetAll                             method    s         a{sv}        -
+    .Set                                method    ssv       -            -
+    .PropertiesChanged                  signal    sa{sv}as  -            -
+    xyz.openbmc_project.State.Host.Misc interface -         -            -
+    .CoreBiosDone                       property  b         true         emits-change
+    .ESpiPlatformReset                  property  b         true         emits-change
+    .PostComplete                       property  b         true         emits-change
+    
+    Signed-off-by: Ankita Prasad <ankita.prasad@intel.com>
+
+commit 43cd3ec823007ec1d97e1bd33b7be80e941550b4
+Author: Nikhil Jain C S <nikhil.jain.c.s@intel.com>
+Date:   Thu Mar 24 12:36:32 2022 +0530
+
+    Add support for vGPIO based POST Complete signal (#2)
+    
+    * Add support for vGPIO based POST Complete signal
+    
+     1. Post Complete is intended to be a Virtual Wire based dbus property.
+        When CoreBiosDone property is set, post complete status is read from
+        Virtual Wire Register.
+     2. Set PostComplete property based on value of Bit 0 of Virtual
+         Wire Register.
+     3. The code handles any property change and reflects in the Host Misc
+         Manager service.
+    
+     Tested: Tested manually by mimicking the signal by modifying
+     ESPI09C[0] register on AST2600. The property vGPIOPostComplete is set
+     based on CoreBiosDone.
+    
+    Signed-off-by: Ankita Prasad <ankita.prasad@intel.com>
+    Signed-off-by: Nikhil Jain C S nikhil.jain.c.s@intel.com
+
+commit 470facc6e94ecbd01ca9c3f0749ae603dffff0e9
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Fri Sep 24 11:13:02 2021 +0530
+
+    Add README
+    
+    Add README.md file
+    
+    Change-Id: I38835c4aed398a23ed148d903f14f478b3ae4b35
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit da65b239e6622fbf913a904480fe3ff87ee02dec
+Author: Jonathan Doman <jonathan.doman@intel.com>
+Date:   Mon Jun 7 19:02:32 2021 -0700
+
+    Update sio_status device path
+    
+    Reorganization of LPC driver places the sio_status device file in a new
+    location. We need to use the correct path or else the platform_state
+    D-Bus object will not be created.
+    
+    Tested:
+    $ busctl introspect xyz.openbmc_project.Host.Misc.Manager \
+        /xyz/openbmc_project/misc/platform_state
+    ...
+    xyz.openbmc_project.State.Host.Misc interface -         -            -
+    .CoreBiosDone                       property  b         true         emits-change
+    .ESpiPlatformReset                  property  b         false        emits-change
+    
+    Change-Id: Ibfa06c5c22ff1d00939bab7866fe2f5d609c46d4
+    Signed-off-by: Jonathan Doman <jonathan.doman@intel.com>
+
+commit 0d8577404fd321841fc84de547fe3d1d2a36909f
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Thu Mar 18 16:49:46 2021 +0530
+
+    Variable mailbox size support
+    
+    AST2500/AST2600-A0 BMC has only 16 mailbox registers, where as
+    AST2600-A1 has 32 mailbox registers. Add support to query the size
+    of mailbox irrespective of the platform configuration.
+    
+    Tested:
+    1. Verified 16 or 32 number of registers are exposed on D-Bus as
+    per platform configuration
+    2. read/write to mailbox is working as expected
+    
+    Change-Id: I6c023cfd6acdbdf6795772d795cf2c2563cdf879
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit 9cdaeb8f63889f63d315ecd0e94b364e8cba883a
+Author: AppaRao Puli <apparao.puli@linux.intel.com>
+Date:   Tue Apr 6 20:38:30 2021 +0530
+
+    Improved coreBiosDone wait timeout
+    
+    In some platforms with fully populated configuration such
+    as dual CPU's and 8+8(DDRT/LRDIMM), It may take more than
+    6 minutes to complete the DXE phase in BIOS. So current
+    wait time of 6 Minutes for forcing coreBiosDone=True in
+    BMC implementation is not enough.
+    
+    So increased the wait timer timeout value to more appropriate
+    value of 10 minutes from existing 6 minutes.
+    
+    Tested:
+     - Did unit test for checking timer timeout value and it
+       works fine. Real time use case will be test on cluster
+       systems.
+    
+    Change-Id: I3083886444b14277eaac0602085ed96461641374
+    Signed-off-by: AppaRao Puli <apparao.puli@linux.intel.com>
+
+commit 47a56d7f753b5d0dd1eb0ef88005a966eaaa1144
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Wed Oct 7 21:26:03 2020 +0530
+
+    Add MAINTAINERS file
+    
+    Add Arun and Richard as maintainers.
+    
+    Change-Id: Iefbe05329a70980d44b2df33ac7617c7d5b04055
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit e286cf0a3c3673eba5830e9fd84a5d88c2abe94c
+Author: Zhikui Ren <zhikui.ren@intel.com>
+Date:   Fri Sep 25 16:04:48 2020 -0700
+
+    Add missing includes to prepare for upstream sync.
+    
+    Upstream removed broad boost include. Add missing headers to
+    fix build issues when sync with  upstream.
+    
+    Signed-off-by: Zhikui Ren <zhikui.ren@intel.com>
+    Change-Id: I8c37399d6295875788d1ee763ad1df0326336d0c
+
+commit 17481c639999cda1bfc999fe1703290425c7ce45
+Author: Vernon Mauery <vernon.mauery@linux.intel.com>
+Date:   Wed Jul 15 10:05:54 2020 -0700
+
+    Use a valid D-Bus interface name
+    
+    D-Bus interfaces require a dotted name with at least two parts, with the
+    recommended name reverse FQDN style. Without this change, the host misc
+    manager was constantly aborting because of the invalid name (with the
+    latest sdbusplus changes)
+    
+    Tested: The misc manager is back up and running and can interact with
+            other entities on the bus.
+    
+    Change-Id: I776b3be44b943b0c76ca6864ba5dc5c4fe837f52
+    Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+
+commit 7e14ddf805cda0cdf3db564081144d9532e555cd
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Thu Apr 23 07:33:20 2020 +0530
+
+    Move SyslogIdentifier to proper section
+    
+    Moving SyslogIdentifier under service section
+    
+    Tested:
+    1) systemd is not throwing the below error
+    Jan 01 00:00:14 intel-obmc systemd[1]: /lib/systemd/system/xyz.openbmc_project.Host.Misc.Manager.service:3: Unknown key name 'SyslogIdentifier' in section 'Unit', ignoring.
+    2) `journalctl SYSLOG_IDENTIFIER=host-misc-manager -f` worked as
+    expected
+    
+    Change-Id: Ife440b973bf1f1fb5fff8f42b1a7a2c2b2e3dcc9
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit 107ee33088cf8f34df576892048c3b027433486d
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Tue Apr 21 12:39:23 2020 +0530
+
+    [host-misc-manager]Add CoreBiosDone signal support
+    
+    Add CoreBiosDone property to host-misc-manager.
+    Use scratch register to communicate CoreBiosDone signal between
+    BMC and BIOS. CoreBiosDone depend on eSPI reset and power
+    state of the platform to address corner cases.
+    
+    Tested:
+    1) Manually generated CoreBiosDone signal and verified CoreBiosDone
+    property is getting updated
+    2) Verified same over BIOS reboots and BMC reboots
+    3) Confirmed CoreBiosDone set to true as default after maximum
+    allowed BIOS boot time
+    4) Verified PropertiesChanged signal during CoreBiosDone update
+    
+    Change-Id: I8a9c9e802c762d478bd8ad1b2a7aa7e708a88d4b
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit 8726de8604c64e4518ed54b753277837e413b6e9
+Author: Arun P. Mohanan <arun.p.m@linux.intel.com>
+Date:   Tue Apr 7 17:46:38 2020 +0530
+
+    [host-misc-manager] Add mailbox manager
+    
+    Add mailbox manager to host-misc-manager.
+    Provide interfaces to read/write 16 mailbox registers as
+    `/xyz/openbmc_project/misc/mailbox/<x>`
+    
+    Tested:
+    1) busctl tree xyz.openbmc_project.Host.Misc.Manager shows
+    └─/xyz
+      └─/xyz/openbmc_project
+        └─/xyz/openbmc_project/misc
+          ├─/xyz/openbmc_project/misc/mailbox
+          │ ├─/xyz/openbmc_project/misc/mailbox/0
+          │ ├─/xyz/openbmc_project/misc/mailbox/1
+          │ ├─/xyz/openbmc_project/misc/mailbox/10
+          │ ├─/xyz/openbmc_project/misc/mailbox/11
+          │ ├─/xyz/openbmc_project/misc/mailbox/12
+          │ ├─/xyz/openbmc_project/misc/mailbox/13
+          │ ├─/xyz/openbmc_project/misc/mailbox/14
+          │ ├─/xyz/openbmc_project/misc/mailbox/15
+          │ ├─/xyz/openbmc_project/misc/mailbox/2
+          │ ├─/xyz/openbmc_project/misc/mailbox/3
+          │ ├─/xyz/openbmc_project/misc/mailbox/4
+          │ ├─/xyz/openbmc_project/misc/mailbox/5
+          │ ├─/xyz/openbmc_project/misc/mailbox/6
+          │ ├─/xyz/openbmc_project/misc/mailbox/7
+          │ ├─/xyz/openbmc_project/misc/mailbox/8
+          │ └─/xyz/openbmc_project/misc/mailbox/9
+          └─/xyz/openbmc_project/misc/platform_state
+    2) Verified busctl get-property of `Value` gives corresponding
+    mailbox value
+    3) Verified busctl set-property of `Value` modified corresponding
+    mailbox value
+    4) Verified manual mailbox register value modification trigger
+    corresponding signal
+    
+    Change-Id: I40fafff9ccbd5f08bdbbd75f8e5983edc7fe6629
+    Signed-off-by: Arun P. Mohanan <arun.p.m@linux.intel.com>
+
+commit 2f7be710dea914b975bfb20a9d7a466da85f88cc
+Author: Arun P M <arun.p.m@intel.com>
+Date:   Mon Apr 6 16:17:10 2020 +0530
+
+    [host-misc-manager] Add host-misc-manager daemon
+    
+    Add host-misc-manager daemon.
+    Add support to expose ESpiPlatformReset D-Bus property
+    
+    Tested:
+    1) Verified that service file is installed under /lib/systemd/system
+    2) host-misc-manager is started by systemd
+    3) busctl tree xyz.openbmc_project.Host.Misc.Manager shows
+    └─/xyz
+      └─/xyz/openbmc_project
+        └─/xyz/openbmc_project/misc
+          └─/xyz/openbmc_project/misc/platform_state
+    4) Verified busctl get-property of ESpiPlatformReset after eSPI reset
+    5) Verified eSPI reset trigger corresponding D-Bus signal
+    
+    Change-Id: If9286c056c9ebb82bc3aec664b49d300516baa94
+    Signed-off-by: Arun P M <arun.p.m@intel.com>
+
+commit 180c68bca7811a06a4a8fad55f0cf956ea63f925
+Author: SCM Administrator <NoEmailShouldEverBeSentToSCMAdmin>
+Date:   Wed Apr 1 13:30:16 2020 -0700
+
+    Initial empty repository
