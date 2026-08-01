@@ -1,3 +1,15 @@
+commit df314506e1cd9acf335afb66f0dda721ee6d7525
+Author: smahankx <satish.kumarx.mahankali@intel.com>
+Date:   Thu Jul 9 11:28:21 2026 +0530
+
+    platform-state: initialize SIO before arming eSPI async read (#26)
+    
+    Move sioStatusInit() before eSpiInit() so any SIO startup failure occurs
+    before the eSPI async_read callback captures this. This avoids a
+    cancelled
+    handler running after constructor unwind and dereferencing a destroyed
+    PlatformState instance.
+
 commit 92436c8780ee6681fe3ba346eb8ca1280abe18a5
 Author: smahankx <satish.kumarx.mahankali@intel.com>
 Date:   Thu Jun 11 13:20:37 2026 +0530

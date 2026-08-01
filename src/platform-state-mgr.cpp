@@ -61,8 +61,8 @@ PlatformState::PlatformState(
     server(srv), conn(connection), pollTimer(io), vwPollTimer(io)
 {
     pltStateIface = server.add_interface(platformStatePath, platformStateIntf);
-    eSpiInit();
     sioStatusInit();
+    eSpiInit();
     triggerPostComplete();
 }
 
