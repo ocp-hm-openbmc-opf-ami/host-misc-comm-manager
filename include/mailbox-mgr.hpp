@@ -22,8 +22,8 @@
 
 class MailboxMgr
 {
-    boost::asio::io_context &io;
-    sdbusplus::asio::object_server &server;
+    boost::asio::io_context& io;
+    sdbusplus::asio::object_server& server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::vector<std::shared_ptr<sdbusplus::asio::dbus_interface>> mboxIface;
     int mboxFd = -1;
@@ -37,13 +37,13 @@ class MailboxMgr
     size_t writeMbox(const unsigned int reg, const uint8_t mboxDataRegBVal);
 
   public:
-    MailboxMgr(boost::asio::io_context &io, sdbusplus::asio::object_server &srv,
-               std::shared_ptr<sdbusplus::asio::connection> &conn);
+    MailboxMgr(boost::asio::io_context& io, sdbusplus::asio::object_server& srv,
+               std::shared_ptr<sdbusplus::asio::connection>& conn);
 
-    MailboxMgr(const MailboxMgr &) = delete;
-    MailboxMgr &operator=(const MailboxMgr &) = delete;
-    MailboxMgr(MailboxMgr &&) = delete;
-    MailboxMgr &operator=(MailboxMgr &&) = delete;
+    MailboxMgr(const MailboxMgr&) = delete;
+    MailboxMgr& operator=(const MailboxMgr&) = delete;
+    MailboxMgr(MailboxMgr&&) = delete;
+    MailboxMgr& operator=(MailboxMgr&&) = delete;
 
     ~MailboxMgr()
     {

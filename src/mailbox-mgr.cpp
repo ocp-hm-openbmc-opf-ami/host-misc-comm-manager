@@ -24,21 +24,20 @@
 #include <boost/asio/read.hpp>
 #include <phosphor-logging/log.hpp>
 
-static constexpr const char *mboxPath = "/xyz/openbmc_project/misc/mailbox/";
-static constexpr const char *mboxIntf = "xyz.openbmc_project.Misc.Mailbox";
+static constexpr const char* mboxPath = "/xyz/openbmc_project/misc/mailbox/";
+static constexpr const char* mboxIntf = "xyz.openbmc_project.Misc.Mailbox";
 
 MailboxMgr::MailboxMgr(
-    boost::asio::io_context &ioService, sdbusplus::asio::object_server &srv,
-    std::shared_ptr<sdbusplus::asio::connection> &connection) :
-    io(ioService),
-    server(srv), conn(connection)
+    boost::asio::io_context& ioService, sdbusplus::asio::object_server& srv,
+    std::shared_ptr<sdbusplus::asio::connection>& connection) :
+    io(ioService), server(srv), conn(connection)
 {
     mboxInit();
 }
 
 void MailboxMgr::mboxInit()
 {
-    constexpr char *mboxDevName = "/dev/aspeed-mbox";
+    constexpr char* mboxDevName = "/dev/aspeed-mbox";
 
     mboxFd = open(mboxDevName, O_RDWR | O_NONBLOCK | O_SYNC);
     if (mboxFd < 0)
@@ -78,7 +77,7 @@ void MailboxMgr::asyncReadMbox()
         *mboxDev,
         boost::asio::buffer(newMboxDataBuffer, newMboxDataBuffer.size()),
         boost::asio::transfer_exactly(mboxSize),
-        [this](const boost::system::error_code &ec, size_t rlen) {
+        [this](const boost::system::error_code& ec, size_t rlen) {
             if (ec || rlen != mboxSize)
             {
                 phosphor::logging::log<phosphor::logging::level::ERR>(
@@ -92,8 +91,8 @@ void MailboxMgr::asyncReadMbox()
                 {
                     mboxIface[reg]->register_property(
                         "Value", static_cast<uint8_t>(newMboxDataBuffer[reg]),
-                        [this, reg](const uint8_t &req,
-                                    uint8_t &propertyValue) {
+                        [this,
+                         reg](const uint8_t& req, uint8_t& propertyValue) {
                             if (req != propertyValue)
                             {
                                 if (1 != writeMbox(reg, req))
@@ -105,7 +104,7 @@ void MailboxMgr::asyncReadMbox()
                             }
                             return 1;
                         },
-                        [this, reg](const uint8_t &value) {
+                        [this, reg](const uint8_t& value) {
                             return mboxDataBuffer[reg];
                         });
                     mboxIface[reg]->initialize(true);

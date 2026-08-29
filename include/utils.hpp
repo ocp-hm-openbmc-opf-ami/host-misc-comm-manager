@@ -20,8 +20,8 @@
 #include <phosphor-logging/elog-errors.hpp>
 #include <sdbusplus/asio/object_server.hpp>
 
-static inline void channelAbort(boost::asio::io_context &io, const char *msg,
-                                const boost::system::error_code &ec)
+static inline void channelAbort(boost::asio::io_context& io, const char* msg,
+                                const boost::system::error_code& ec)
 {
     phosphor::logging::log<phosphor::logging::level::ERR>(
         msg, phosphor::logging::entry("ERROR=%s", ec.message().c_str()));
