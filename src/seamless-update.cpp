@@ -16,6 +16,7 @@
 #include "seamless-update.hpp"
 
 #include "utils.hpp"
+
 #include <boost/asio.hpp>
 
 static constexpr const char* seamlessUpdatePath =
@@ -26,8 +27,7 @@ static constexpr const char* seamlessUpdateIntf =
 SeamlessUpdate::SeamlessUpdate(
     boost::asio::io_context& ioService, sdbusplus::asio::object_server& srv,
     std::shared_ptr<sdbusplus::asio::connection>& connection) :
-    io(ioService),
-    server(srv), conn(connection)
+    io(ioService), server(srv), conn(connection)
 {
     seamlessUpdateIface =
         server.add_interface(seamlessUpdatePath, seamlessUpdateIntf);
