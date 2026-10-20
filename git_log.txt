@@ -1,3 +1,11 @@
+commit 3f2e853429cf9309e13febc31b3d26496b094006
+Author: Jason M. Bills <jason.m.bills@intel.com>
+Date:   Tue Aug 18 09:13:35 2026 -0600
+
+    Update clang-formatting (#29)
+    
+    Signed-off-by: Jason M. Bills <jason.m.bills@intel.com>
+
 commit df314506e1cd9acf335afb66f0dda721ee6d7525
 Author: smahankx <satish.kumarx.mahankali@intel.com>
 Date:   Thu Jul 9 11:28:21 2026 +0530

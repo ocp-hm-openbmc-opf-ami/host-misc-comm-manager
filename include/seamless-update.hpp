@@ -16,28 +16,29 @@
 
 #pragma once
 #include <boost/asio/io_context.hpp>
-#include <fstream>
 #include <sdbusplus/asio/object_server.hpp>
+
+#include <fstream>
 
 class SeamlessUpdate
 {
     std::fstream deviceFile;
-    boost::asio::io_context &io;
-    sdbusplus::asio::object_server &server;
+    boost::asio::io_context& io;
+    sdbusplus::asio::object_server& server;
     std::shared_ptr<sdbusplus::asio::connection> conn;
     std::shared_ptr<sdbusplus::asio::dbus_interface> seamlessUpdateIface;
-    //Bit 1 and Bit 3 of SIORx_29 register is set to 1
+    // Bit 1 and Bit 3 of SIORx_29 register is set to 1
     uint8_t sioStatus = 0x0A;
     void checkAndRegisterSeamlessProperty(void);
     void sioStatusInit(void);
-    void setSioRegister(uint8_t &regVal);
+    void setSioRegister(uint8_t& regVal);
     void readSioRegister(void);
-    int updateSioRegister(const uint8_t &regVal);
+    int updateSioRegister(const uint8_t& regVal);
 
   public:
-    SeamlessUpdate(boost::asio::io_context &io,
-                   sdbusplus::asio::object_server &srv,
-                   std::shared_ptr<sdbusplus::asio::connection> &conn);
+    SeamlessUpdate(boost::asio::io_context& io,
+                   sdbusplus::asio::object_server& srv,
+                   std::shared_ptr<sdbusplus::asio::connection>& conn);
     ~SeamlessUpdate()
     {
         if (deviceFile.is_open())

@@ -20,11 +20,11 @@
 
 #include <phosphor-logging/log.hpp>
 
-static constexpr const char *hostMiscMgrService =
+static constexpr const char* hostMiscMgrService =
     "xyz.openbmc_project.Host.Misc.Manager";
-static constexpr const char *hostMiscMgrIntf =
+static constexpr const char* hostMiscMgrIntf =
     "xyz.openbmc_project.Host.Misc.Manager";
-static constexpr const char *hostMiscPath = "/xyz/openbmc_project/misc";
+static constexpr const char* hostMiscPath = "/xyz/openbmc_project/misc";
 
 int main()
 {
@@ -43,7 +43,7 @@ int main()
     {
         platformState = std::make_unique<PlatformState>(io, server, conn);
     }
-    catch (std::exception const &e)
+    catch (const std::exception& e)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
     }
@@ -52,7 +52,7 @@ int main()
     {
         mailboxMgr = std::make_unique<MailboxMgr>(io, server, conn);
     }
-    catch (std::exception const &e)
+    catch (const std::exception& e)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
     }
@@ -61,7 +61,7 @@ int main()
     {
         seamlessUpdate = std::make_unique<SeamlessUpdate>(io, server, conn);
     }
-    catch (std::exception const &e)
+    catch (const std::exception& e)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(e.what());
     }

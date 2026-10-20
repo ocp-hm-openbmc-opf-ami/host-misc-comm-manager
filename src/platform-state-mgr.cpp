@@ -57,8 +57,7 @@ static constexpr const int pollIntervalSec = 1;
 PlatformState::PlatformState(
     boost::asio::io_context& ioService, sdbusplus::asio::object_server& srv,
     std::shared_ptr<sdbusplus::asio::connection>& connection) :
-    io(ioService),
-    server(srv), conn(connection), pollTimer(io), vwPollTimer(io)
+    io(ioService), server(srv), conn(connection), pollTimer(io), vwPollTimer(io)
 {
     pltStateIface = server.add_interface(platformStatePath, platformStateIntf);
     sioStatusInit();
@@ -163,8 +162,8 @@ void PlatformState::initializePostComplete(void)
 
 void PlatformState::readPOSTComplete(void)
 {
-
-    gpiod::line vwFmBIOSPostCmplt = gpiod::find_line("VW_FM_BIOS_POST_CMPLT_BMC");
+    gpiod::line vwFmBIOSPostCmplt =
+        gpiod::find_line("VW_FM_BIOS_POST_CMPLT_BMC");
     if (!vwFmBIOSPostCmplt)
     {
         phosphor::logging::log<phosphor::logging::level::ERR>(
